@@ -1,0 +1,30 @@
+html, body {
+	border: 0;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+body {
+	background-color: #F1F1EC;
+	color: #222222;
+}
+
+a {
+	color: #797470;
+}
+
+a:hover,
+a:active {
+	color: #BB3900;
+}
+
+a:visited {
+	color: #222222;
+}
+
+header {
+	padding: 10px 0;
+	text-align: center;
+}

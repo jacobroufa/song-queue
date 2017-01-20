@@ -1,0 +1,23 @@
+{
+  "name": "song-queue",
+  "description": "Queue up a list of songs, displaying their key(s) and chosen scale(s)",
+  "main": "index.js",
+  "authors": [
+    "Jacob M. Roufa <jacob.roufa@gmail.com> (http://jacobroufa.com/)"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jacobroufa/song-queue",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "dojo": "dojo/dojo#^1.12.1",
+    "dijit": "dojo/dijit#^1.12.1",
+    "dojo-util": "dojo/util#^1.12.1"
+  }
+}
