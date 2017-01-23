@@ -28,3 +28,17 @@ header {
 	padding: 10px 0;
 	text-align: center;
 }
+
+.buttons > span:first-child {
+	text-align: left;
+}
+
+.buttons > span {
+	padding: 0 5px;
+	text-align: center;
+	width: 30%;
+}
+
+.buttons > span:last-child {
+	text-align: right;
+}
