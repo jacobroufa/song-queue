@@ -2,6 +2,9 @@ const path = require('path');
 const express = require('express');
 const scale = require('tonal-scale');
 
+// we are going to support these scales only, for now...
+const modes = ['major', 'minor', 'dorian', 'major pentatonic', 'minor pentatonic'];
+
 const app = express();
 
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -16,9 +19,14 @@ app.get('/scale/:key-:mode', (req, res) => {
     });
 });
 
+app.get('/scales', (req, res) => {
+    res.json({
+        scales: modes
+    });
+});
+
 app.get('/scales/:key', (req, res) => {
     const key = req.params.key;
-    const modes = ['major', 'minor', 'dorian', 'major pentatonic', 'minor pentatonic'];
     const scales = {};
 
     modes.forEach((mode) => {
