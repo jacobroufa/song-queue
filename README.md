@@ -9,6 +9,8 @@ This is intended to be run as a service somewhere for my personal use at band pr
 
 `/scale/:key-:mode` returns an array `scale` with the notes of the requested scale, e.g. `/scale/ab-minor-pentatonic`, if available.
 
+`/scales` returns an array of the available scales.
+
 `/scales/:key` returns an object of arrays with scales in the provided key for each of the available scales.
 
 ### Available scales
