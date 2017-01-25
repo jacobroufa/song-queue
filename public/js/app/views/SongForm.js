@@ -71,9 +71,16 @@ define([
             var buttonContainer = domConstruct.create('div', null, this.domNode);
             this.createNewSong = new Button({
                 label: 'Add Song',
-                onClick: function (event) {
+                onClick: lang.hitch(this, function (event) {
                     event.preventDefault();
-                }
+
+                    var title = this.songName.get('value');
+                    var keys = this.songKey.get('value');
+                    var modes = this.songModes.get('value');
+
+                    // TODO heed this below warning
+                    console.warn('I need to make these things do stuff!', title, keys, modes);
+                })
             });
             this.createNewSong.placeAt(buttonContainer);
         },
