@@ -1,6 +1,7 @@
 define([
     'dojo/_base/declare',
     'dojo/_base/lang',
+    'dojo/dom-construct',
     'dijit/layout/ContentPane',
     'dijit/form/TextBox',
     'dijit/form/MultiSelect',
@@ -8,40 +9,73 @@ define([
 ], function (
     declare,
     lang,
+    domConstruct,
     ContentPane,
     TextBox,
     MultiSelect,
     Button
 ) {
     return declare('app/views/SongForm', ContentPane, {
+        keys: null,
         scales: null,
 
         buildRendering: function () {
             this.inherited(arguments);
 
+            var nameContainer = domConstruct.create('div', null, this.domNode);
+            domConstruct.create('label', {
+                for: 'title',
+                innerHTML: 'Song Title'
+            }, nameContainer);
             this.songName = new TextBox({
-                name: 'title',
-                placeHolder: 'Song title'
+                name: 'title'
             });
-            this.songKey = new TextBox({
-                name: 'key',
-                placeHolder: 'Song key'
+            this.songName.placeAt(nameContainer);
+
+            var keysContainer = domConstruct.create('div', null, this.domNode);
+
+            var songKeysContainer = domConstruct.create('div', null, keysContainer);
+            domConstruct.create('label', {
+                for: 'songKey',
+                innerHTML: 'Song Key'
+            }, songKeysContainer);
+            var songKeys = domConstruct.create('select', null, songKeysContainer);
+            this.keys.forEach(function (key) {
+                domConstruct.create('option', {
+                    label: key,
+                    value: encodeURIComponent(key)
+                }, songKeys);
+            }, songKeys);
+            this.songKey = new MultiSelect({
+                name: 'songKey',
+                options: this.keys
+            }, songKeys);
+
+            var songModesContainer = domConstruct.create('div', null, keysContainer);
+            domConstruct.create('label', {
+                for: 'modes',
+                innerHTML: 'Mode(s)'
+            }, songModesContainer);
+            var songModes = domConstruct.create('select', null, songModesContainer);
+            this.scales.forEach(function (scale) {
+                domConstruct.create('option', {
+                    label: scale,
+                    value: scale.toLowerCase()
+                }, songModes);
             });
             this.songModes = new MultiSelect({
-                label: 'Mode(s)',
+                name: 'modes',
                 options: this.scales
-            });
+            }, songModes);
+
+            var buttonContainer = domConstruct.create('div', null, this.domNode);
             this.createNewSong = new Button({
                 label: 'Add Song',
                 onClick: function (event) {
                     event.preventDefault();
                 }
             });
-
-            this.songName.placeAt(this.domNode, 'last');
-            this.songKey.placeAt(this.domNode, 'last');
-            this.songModes.placeAt(this.domNode, 'last');
-            this.createNewSong.placeAt(this.domNode, 'last');
+            this.createNewSong.placeAt(buttonContainer);
         },
 
         startup: function () {
