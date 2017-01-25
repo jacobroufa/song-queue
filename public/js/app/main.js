@@ -5,6 +5,7 @@ define([
     'dijit/layout/_LayoutWidget',
     'dijit/form/Button',
     'dijit/Dialog',
+    'app/util',
     'app/views/SongForm'
 ], function (
     domConstruct,
@@ -13,6 +14,7 @@ define([
     _LayoutWidget,
     Button,
     Dialog,
+    util,
     SongForm
 ) {
 
@@ -33,6 +35,7 @@ define([
                     this.newSongForm = new Dialog({
                         title: 'Add a New Song',
                         content: new SongForm({
+                            keys: util.getKeys(),
                             scales: this._scaleList
                         })
                     });
