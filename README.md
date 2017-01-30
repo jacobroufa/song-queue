@@ -1,11 +1,13 @@
 Song Queue
 ----------
 
-Run `npm install` followed by `npm start`, then visit http://localhost:8008 to view the application.
+Run `npm install`, then `bower install`, followed by `npm start`. You should now be able to visit http://localhost:8008 to view the application.
 
 This is intended to be run as a service somewhere for my personal use at band practice.
 
 ## JSON endpoints
+
+`/keys` returns an array of all the possible keys, including sharp and flat keys.
 
 `/scale/:key-:mode` returns an array `scale` with the notes of the requested scale, e.g. `/scale/ab-minor-pentatonic`, if available.
 
