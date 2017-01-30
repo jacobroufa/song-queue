@@ -19,6 +19,7 @@
     "dojo": "dojo/dojo#^1.12.1",
     "dijit": "dojo/dijit#^1.12.1",
     "dojo-util": "dojo/util#^1.12.1",
-    "dstore": "^1.1.1"
+    "dstore": "^1.1.1",
+    "dgrid": "^1.1.0"
   }
 }

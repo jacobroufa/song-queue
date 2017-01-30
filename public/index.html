@@ -6,7 +6,8 @@
 
 		<title>Song Queue</title>
 
-		<link rel="stylesheet" href="/js/lib/dijit/themes/tundra/tundra.css" />
+		<link rel="stylesheet" type="text/css" href="/js/lib/dijit/themes/tundra/tundra.css" />
+		<link rel="stylesheet" type="text/css" href="/js/lib/dgrid/css/dgrid.css">
 		<link rel="stylesheet" type="text/css" href="/css/style.css" />
 	</head>
 	<body class="tundra">
@@ -19,6 +20,7 @@
 		<script type="text/javascript">
 			var dojoConfig = {
 				packages: [
+					{ name: 'dgrid', location: '/js/lib/dgrid' },
 					{ name: 'dstore', location: '/js/lib/dstore' },
 					{ name: 'dijit', location: '/js/lib/dijit' },
 					{ name: 'dojo', location: '/js/lib/dojo' },
@@ -32,10 +34,18 @@
 		<script type="text/javascript" src="/js/lib/dojo/dojo.js"></script>
 
 		<script type="text/javascript">
-			require(['app'], function (App) {
-				var app = new App();
-				app.placeAt('main');
-				app.startup();
+			require(['dojo/request', 'dojo/promise/all', 'app'], function (request, all, App) {
+				var scales = request.get('/scales', { handleAs: 'json' });
+				var keys = request.get('/keys', { handleAs: 'json' });
+
+				all([scales, keys]).then(function (data) {
+					var app = new App({
+						scales: data[0].scales,
+						keys: data[1].keys
+					});
+					app.placeAt('main');
+					app.startup();
+				});
 			});
 		</script>
 	</body>
