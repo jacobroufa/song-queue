@@ -43,11 +43,15 @@ header {
 	text-align: right;
 }
 
+.dgrid-row-even {
+	background-color: #CECDC6;
+}
+
 .song {
 	position: relative;
 }
 
-.song > h3 {
+.songTitle {
 	padding: 0 1em;
 }
 
@@ -58,8 +62,5 @@ header {
 }
 
 .scale {
-	display: inline-block;
-	height: 2em !important;
-	vertical-align: middle;
-	width: 100% !important;
+	padding: 1em 2em;
 }

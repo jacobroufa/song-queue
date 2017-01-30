@@ -3,16 +3,12 @@ define([
     'dojo/_base/lang',
     'dojo/dom-construct',
     'dijit/_WidgetBase',
-    'dijit/layout/AccordionContainer',
-    'dijit/layout/ContentPane',
     'dijit/form/Button'
 ], function (
     declare,
     lang,
     domConstruct,
     _WidgetBase,
-    AccordionContainer,
-    ContentPane,
     Button
 ) {
     return declare('app/views/Song', _WidgetBase, {
@@ -27,23 +23,30 @@ define([
             console.log(this.songId, this.title, this.scales);
 
             domConstruct.create('h3', {
+                className: 'songTitle',
                 innerHTML: this.title
             }, this.domNode);
 
-            var div = domConstruct.create('div', {}, this.domNode);
-
-            this.scalesContainer = new AccordionContainer({}, div);
+            this.scalesContainer = domConstruct.create('div', {
+                className: 'scalesContainer'
+            }, this.domNode);
 
             Object.keys(this.scales).forEach(lang.hitch(this, function (scaleName) {
                 var scale = this.scales[scaleName];
+                var scaleContainer = domConstruct.create('div', {
+                    className: 'scale'
+                }, this.scalesContainer);
 
-                this.scalesContainer.addChild(new ContentPane({
-                    className: 'scale',
-                    title: scaleName,
-                    content: scale.reduce(function (returnScale, note) {
+                domConstruct.create('strong', {
+                    innerHTML: scaleName
+                }, scaleContainer);
+                domConstruct.create('br', null, scaleContainer);
+
+                domConstruct.create('p', {
+                    innerHTML: scale.reduce(function (returnScale, note) {
                         return returnScale + note + ' ';
                     }, '')
-                }));
+                }, scaleContainer);
             }));
 
             this.songDeleteButton = new Button({
@@ -59,7 +62,6 @@ define([
         startup: function () {
             this.inherited(arguments);
 
-            this.scalesContainer.startup();
             this.songDeleteButton.startup();
         }
     });
