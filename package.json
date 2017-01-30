@@ -4,6 +4,7 @@
   "description": "Queue up a list of songs, displaying their key(s) and chosen scale(s)",
   "main": "index.js",
   "scripts": {
+    "postinstall": "bower install",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
