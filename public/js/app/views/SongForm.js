@@ -2,6 +2,7 @@ define([
     'dojo/_base/declare',
     'dojo/_base/lang',
     'dojo/dom-construct',
+    'dojo/Evented',
     'dijit/layout/ContentPane',
     'dijit/form/TextBox',
     'dijit/form/MultiSelect',
@@ -10,12 +11,13 @@ define([
     declare,
     lang,
     domConstruct,
+    Evented,
     ContentPane,
     TextBox,
     MultiSelect,
     Button
 ) {
-    return declare('app/views/SongForm', ContentPane, {
+    return declare('app/views/SongForm', [ContentPane, Evented], {
         keys: null,
         scales: null,
 
@@ -78,8 +80,15 @@ define([
                     var keys = this.songKey.get('value');
                     var modes = this.songModes.get('value');
 
-                    // TODO heed this below warning
-                    console.warn('I need to make these things do stuff!', title, keys, modes);
+                    this.emit('newSong', {
+                        title: title,
+                        keys: keys,
+                        modes: modes
+                    });
+
+                    this.songName.set('value', '');
+                    this.songKey.set('value', '');
+                    this.songModes.set('value', '');
                 })
             });
             this.createNewSong.placeAt(buttonContainer);

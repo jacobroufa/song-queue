@@ -5,8 +5,9 @@ define([
     'dijit/layout/_LayoutWidget',
     'dijit/form/Button',
     'dijit/Dialog',
-    'app/util',
-    'app/views/SongForm'
+    'app/models/SongList',
+    'app/views/SongForm',
+    'app/views/SongList'
 ], function (
     domConstruct,
     lang,
@@ -14,33 +15,66 @@ define([
     _LayoutWidget,
     Button,
     Dialog,
-    util,
-    SongForm
+    SongListModel,
+    SongForm,
+    SongList
 ) {
 
     return _LayoutWidget.createSubclass({
 
         baseClass: 'songQueue application-main',
 
+        scales: null,
+
+        keys: null,
+
         constructor: function () {
             this.songs = [];
             this.currentSong = this.songs.length;
+
+            this.songListModel = new SongListModel({
+                dbConfig: {
+                    version: 1,
+                    stores: {
+                        songs: {
+                            title: 50,
+                            id: {
+                                autoIncrement: true,
+                                preference: 100
+                            },
+                            scales: {
+                                multiEntry: true,
+                                preference: 10
+                            }
+                        }
+                    }
+                },
+                storeName: 'songs'
+            });
+        },
+
+        postMixInProperties: function () {
+            this.inherited(arguments);
+
+            this.scales = this.scales.map(function (scale) {
+                return scale.replace(/\w\S*/g, function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                });
+            });
         },
 
         buildRendering: function () {
             this.inherited(arguments);
 
             if (!this.newSongForm) {
-                this._getScaleList().then(lang.hitch(this, function () {
-                    this.newSongForm = new Dialog({
-                        title: 'Add a New Song',
-                        content: new SongForm({
-                            keys: util.getKeys(),
-                            scales: this._scaleList
-                        })
-                    });
-                    this.newSongForm.startup();
-                }));
+                this.newSongForm = new Dialog({
+                    title: 'Add a New Song',
+                    content: new SongForm({
+                        keys: this.keys,
+                        scales: this.scales
+                    })
+                });
+                this.newSongForm.startup();
             }
 
             var buttons = domConstruct.create('div', {
@@ -78,8 +112,9 @@ define([
             newSongButton.placeAt(buttons, 'last');
             nextButton.placeAt(buttons, 'last');
 
-            // TODO:
-            // make container for songs -- app/views/SongList
+            this.songList = new SongList({
+                collection: this.songListModel
+            }, content);
         },
 
         startup: function () {
@@ -90,6 +125,22 @@ define([
             this._prevButton.startup();
             this._newSongButton.startup();
             this._nextButton.startup();
+            this.songList.startup();
+        },
+
+        postCreate: function () {
+            this.inherited(arguments);
+
+            this.newSongForm.content.on('newSong', lang.hitch(this, function (event) {
+                this.songListModel.add({
+                    title: event.title,
+                    keys: event.keys,
+                    modes: event.modes
+                }).then(lang.hitch(this, function () {
+                    this.newSongForm.hide();
+                    this.songList.refresh();
+                }));
+            }));
         },
 
         _nextSong: function () {
@@ -122,18 +173,6 @@ define([
 
         _closeSongs: function () {
             this.songs[this.lastSong].close();
-        },
-
-        _getScaleList: function () {
-            return request.get('/scales', {
-                handleAs: 'json'
-            }).then(lang.hitch(this, function (data) {
-                this._scaleList = data.scales.map(function (scale) {
-                    return scale.replace(/\w\S*/g, function (txt) {
-                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                    });
-                });
-            }));
         }
 
     });

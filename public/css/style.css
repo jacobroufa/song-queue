@@ -42,3 +42,24 @@ header {
 .buttons > span:last-child {
 	text-align: right;
 }
+
+.song {
+	position: relative;
+}
+
+.song > h3 {
+	padding: 0 1em;
+}
+
+.song > .dijitButton {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+.scale {
+	display: inline-block;
+	height: 2em !important;
+	vertical-align: middle;
+	width: 100% !important;
+}
