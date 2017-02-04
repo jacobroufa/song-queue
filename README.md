@@ -11,7 +11,7 @@ This is intended to be run as a service somewhere for my personal use at band pr
 
 `/keys` returns an array of all the possible keys, including sharp and flat keys.
 
-`/scale/:key-:mode` returns an array `scale` with the notes of the requested scale, e.g. `/scale/ab-minor-pentatonic`, if available.
+`/scale/:key-:mode` returns an array named for the mode, with the notes of the requested scale, e.g. `/scale/ab-minor-pentatonic`, if available. If `:mode` is major or minor, the corresponding pentatonic scale is also returned.
 
 `/scales` returns an array of the available scales.
 
