@@ -4,9 +4,14 @@ define([
     'dojo/request',
     'dijit/layout/_LayoutWidget',
     'dijit/form/Button',
+    'dijit/form/ComboButton',
     'dijit/Dialog',
+    'dijit/Menu',
+    'dijit/MenuItem',
     'app/models/SongList',
+    'app/models/Settings',
     'app/views/SongForm',
+    'app/views/ScaleDisplayForm',
     'app/views/SongList'
 ], function (
     domConstruct,
@@ -14,9 +19,14 @@ define([
     request,
     _LayoutWidget,
     Button,
+    ComboButton,
     Dialog,
+    Menu,
+    MenuItem,
     SongListModel,
+    SettingsModel,
     SongForm,
+    ScaleDisplayForm,
     SongList
 ) {
 
@@ -28,29 +38,12 @@ define([
 
         keys: null,
 
+        dbConfig: null,
+
         constructor: function () {
+            // TODO: make current song tracking and "pagination" work
             this.songs = [];
             this.currentSong = this.songs.length;
-
-            this.songListModel = new SongListModel({
-                dbConfig: {
-                    version: 1,
-                    stores: {
-                        songs: {
-                            title: 50,
-                            id: {
-                                autoIncrement: true,
-                                preference: 100
-                            },
-                            scales: {
-                                multiEntry: true,
-                                preference: 10
-                            }
-                        }
-                    }
-                },
-                storeName: 'songs'
-            });
         },
 
         postMixInProperties: function () {
@@ -61,10 +54,28 @@ define([
                     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                 });
             });
+
+            this.songListModel = new SongListModel({
+                dbConfig: this.dbConfig,
+                storeName: 'songs'
+            });
+
+            this.settingsModel = new SettingsModel({
+                dbConfig: this.dbConfig,
+                storeName: 'settings'
+            });
         },
 
         buildRendering: function () {
             this.inherited(arguments);
+
+            if (!this.scaleDisplayForm) {
+                this.scaleDisplayForm = new Dialog({
+                    title: 'Toggle Scale Display',
+                    content: new ScaleDisplayForm()
+                });
+                this.scaleDisplayForm.startup();
+            }
 
             if (!this.newSongForm) {
                 this.newSongForm = new Dialog({
@@ -78,32 +89,56 @@ define([
             }
 
             var buttons = domConstruct.create('div', {
-                className: 'buttons',
+                className: 'buttons'
             }, this.domNode);
             var content = domConstruct.create('div', {
-                className: 'content',
+                className: 'content'
             }, this.domNode);
+            var settings = domConstruct.create('div', {
+                className: 'settings'
+            }, 'header', 'last');
+
+            var settingsMenu = this._settingsMenu = new Menu({ style: 'display: none;' });
+            var songDisplayToggle = new MenuItem({
+                label: 'Toggle Scale Display',
+                onClick: lang.hitch(this, function () {
+                    this.scaleDisplayForm.show();
+                })
+            });
+            var exportSongs = new MenuItem({
+                label: 'Export Songs',
+                onClick: lang.hitch(this, function () {
+                    this._exportSongs();
+                })
+            });
+
+            settingsMenu.addChild(songDisplayToggle);
+            settingsMenu.addChild(exportSongs);
+
+            var settingsButton = this._settingsButton = new ComboButton({
+                label: 'Settings',
+                dropDown: settingsMenu
+            });
 
             var prevButton = this._prevButton = new Button({
+                disabled: true,
                 label: 'Previous Song',
-                onClick: lang.hitch(this, function (event) {
-                    event.preventDefault();
+                onClick: lang.hitch(this, function () {
                     this._prevSong();
                 })
             });
 
             var newSongButton = this._newSongButton = new Button({
                 label: 'Add Another Song',
-                onClick: lang.hitch(this, function (event) {
-                    event.preventDefault();
+                onClick: lang.hitch(this, function () {
                     this.newSongForm.show();
                 })
             });
 
             var nextButton = this._nextButton = new Button({
+                disabled: true,
                 label: 'Next Song',
-                onClick: lang.hitch(this, function (event) {
-                    event.preventDefault();
+                onClick: lang.hitch(this, function () {
                     this._nextSong();
                 })
             });
@@ -111,6 +146,8 @@ define([
             prevButton.placeAt(buttons, 'last');
             newSongButton.placeAt(buttons, 'last');
             nextButton.placeAt(buttons, 'last');
+
+            settingsButton.placeAt(settings);
 
             this.songList = new SongList({
                 collection: this.songListModel
@@ -122,6 +159,8 @@ define([
 
             this.currentSong = 0;
 
+            this._settingsMenu.startup();
+            this._settingsButton.startup();
             this._prevButton.startup();
             this._newSongButton.startup();
             this._nextButton.startup();
@@ -130,6 +169,21 @@ define([
 
         postCreate: function () {
             this.inherited(arguments);
+
+            this.settingsModel.get('Display Mode').then(lang.hitch(this, function (mode) {
+                this.scaleDisplayForm.content.scaleDisplaySelect.set('value', mode.value);
+            }));
+
+            this.scaleDisplayForm.content.on('settingsSave', lang.hitch(this, function (event) {
+                this.settingsModel.put({
+                    id: 'Display Mode',
+                    value: event.displayMode
+                }).then(lang.hitch(this, function (object) {
+                    this.scaleDisplayForm.hide();
+                    this.songList.set('displayMode', event.displayMode);
+                    this.songList.refresh();
+                }));
+            }));
 
             this.newSongForm.content.on('newSong', lang.hitch(this, function (event) {
                 this.songListModel.add({
@@ -173,6 +227,10 @@ define([
 
         _closeSongs: function () {
             this.songs[this.lastSong].close();
+        },
+
+        _exportSongs: function () {
+            console.log('TODO: implement song export!');
         }
 
     });

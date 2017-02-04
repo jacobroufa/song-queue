@@ -29,14 +29,22 @@ header {
 	text-align: center;
 }
 
+.settings {
+	position: absolute;
+	right: 0;
+	top: 34px;
+}
+
 .buttons > span:first-child {
+	margin-left: 0.5%;
 	text-align: left;
 }
 
 .buttons > span {
-	padding: 0 5px;
+	margin: 0;
+	padding: 0;
 	text-align: center;
-	width: 30%;
+	width: 33%;
 }
 
 .buttons > span:last-child {

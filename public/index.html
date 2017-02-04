@@ -11,8 +11,8 @@
 		<link rel="stylesheet" type="text/css" href="/css/style.css" />
 	</head>
 	<body class="tundra">
-		<header>
-			<h1>Song Queue</h1>
+		<header id="header">
+			<h1 id="pageTitle">Song Queue</h1>
 		</header>
 		<div id="main">
 		</div>
@@ -41,7 +41,27 @@
 				all([scales, keys]).then(function (data) {
 					var app = new App({
 						scales: data[0].scales,
-						keys: data[1].keys
+						keys: data[1].keys,
+						dbConfig: {
+							version: 3,
+							stores: {
+								songs: {
+									title: 50,
+									id: {
+										autoIncrement: true,
+										preference: 100
+									},
+									scales: {
+										multiEntry: true,
+										preference: 10
+									}
+								},
+								settings: {
+									id: 50,
+									value: 10
+								}
+							}
+						}
 					});
 					app.placeAt('main');
 					app.startup();
