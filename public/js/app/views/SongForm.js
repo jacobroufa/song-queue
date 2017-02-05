@@ -5,8 +5,8 @@ define([
     'dojo/Evented',
     'dijit/layout/ContentPane',
     'dijit/form/TextBox',
-    'dijit/form/MultiSelect',
-    'dijit/form/Button'
+    'dijit/form/Button',
+    'app/views/KeyModeSelectContainer'
 ], function (
     declare,
     lang,
@@ -14,8 +14,8 @@ define([
     Evented,
     ContentPane,
     TextBox,
-    MultiSelect,
-    Button
+    Button,
+    KeyModeSelectContainer
 ) {
     return declare('app/views/SongForm', [ContentPane, Evented], {
         keys: null,
@@ -36,39 +36,11 @@ define([
 
             var keysContainer = domConstruct.create('div', null, this.domNode);
 
-            var songKeysContainer = domConstruct.create('div', null, keysContainer);
-            domConstruct.create('label', {
-                for: 'songKey',
-                innerHTML: 'Song Key'
-            }, songKeysContainer);
-            var songKeys = domConstruct.create('select', null, songKeysContainer);
-            this.keys.forEach(function (key) {
-                domConstruct.create('option', {
-                    label: key,
-                    value: encodeURIComponent(key)
-                }, songKeys);
-            }, songKeys);
-            this.songKey = new MultiSelect({
-                name: 'songKey',
-                options: this.keys
-            }, songKeys);
-
-            var songModesContainer = domConstruct.create('div', null, keysContainer);
-            domConstruct.create('label', {
-                for: 'modes',
-                innerHTML: 'Mode(s)'
-            }, songModesContainer);
-            var songModes = domConstruct.create('select', null, songModesContainer);
-            this.scales.forEach(function (scale) {
-                domConstruct.create('option', {
-                    label: scale,
-                    value: scale.toLowerCase()
-                }, songModes);
+            var keyModeSelect = this.songKeys = new KeyModeSelectContainer({
+                keys: this.keys,
+                modes: ['major', 'minor']
             });
-            this.songModes = new MultiSelect({
-                name: 'modes',
-                options: this.scales
-            }, songModes);
+            keyModeSelect.placeAt(keysContainer);
 
             var buttonContainer = domConstruct.create('div', null, this.domNode);
             this.createNewSong = new Button({
@@ -77,18 +49,15 @@ define([
                     event.preventDefault();
 
                     var title = this.songName.get('value');
-                    var keys = this.songKey.get('value');
-                    var modes = this.songModes.get('value');
+                    var keys = this.songKeys.get('value');
 
                     this.emit('newSong', {
                         title: title,
                         keys: keys,
-                        modes: modes
                     });
 
                     this.songName.set('value', '');
-                    this.songKey.set('value', '');
-                    this.songModes.set('value', '');
+                    this.songKeys.set('value', '');
                 })
             });
             this.createNewSong.placeAt(buttonContainer);
@@ -98,8 +67,7 @@ define([
             this.inherited(arguments);
 
             this.songName.startup();
-            this.songKey.startup();
-            this.songModes.startup();
+            this.songKeys.startup();
             this.createNewSong.startup();
         }
     });
