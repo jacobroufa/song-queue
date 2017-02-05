@@ -1,7 +1,7 @@
 Song Queue
 ----------
 
-![Song Queue screenshot](/screenshot.png =421x444)
+![Song Queue screenshot](/screenshot.png)
 
 After cloning the repository you should run `npm install`, followed by `npm start`. You should now be able to visit http://localhost:8008 to view the application.
 
