@@ -20,6 +20,7 @@
   "homepage": "https://github.com/jacobroufa/song-queue#readme",
   "dependencies": {
     "express": "4.14.0",
-    "tonal": "0.68.0"
+    "tonal": "0.68.0",
+    "vexflow": "1.2.83"
   }
 }

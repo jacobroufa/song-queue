@@ -4,6 +4,7 @@ define([
     'dojo/request',
     'dojo/promise/all',
     'dstore/LocalDB',
+    'dstore/Memory',
     'dstore/Trackable'
 ], function (
     declare,
@@ -11,7 +12,8 @@ define([
     request,
     all,
     LocalDB,
+    Memory,
     Trackable
 ) {
-    return declare('app/models/Settings', [LocalDB, Trackable]);
+    return declare('app/models/Settings', [LocalDB, Memory, Trackable]);
 });

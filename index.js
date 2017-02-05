@@ -13,6 +13,7 @@ const log = function (path) {
 
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/js/lib', express.static(path.join(__dirname, 'bower_components')));
+app.use('/js/lib/vexflow', express.static(path.join(__dirname, 'node_modules/vexflow/releases')));
 
 app.get('/scale/:key-:mode', (req, res) => {
     const key = req.params.key;

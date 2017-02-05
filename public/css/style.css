@@ -63,7 +63,7 @@ header {
 	padding: 0 1em;
 }
 
-.song > .dijitButton {
+.song > .songActions {
 	position: absolute;
 	top: 5px;
 	right: 5px;

@@ -69,6 +69,22 @@ define([
         buildRendering: function () {
             this.inherited(arguments);
 
+            this.settingsModel.get('Display Mode').then(lang.hitch(this, function (mode) {
+                var content = domConstruct.create('div', {
+                    className: 'content'
+                }, this.domNode, 'last');
+                this.songList = new SongList({
+                    collection: this.songListModel,
+                    displayMode: mode.value
+                }, content);
+                this.songList.startup();
+
+                // TODO: move this out of buildRendering somehow, and finish wiring it up
+                this.songList.on('song-edit', lang.hitch(this, function (event) {
+                    console.log(event);
+                }));
+            }));
+
             if (!this.scaleDisplayForm) {
                 this.scaleDisplayForm = new Dialog({
                     title: 'Toggle Scale Display',
@@ -90,10 +106,7 @@ define([
 
             var buttons = domConstruct.create('div', {
                 className: 'buttons'
-            }, this.domNode);
-            var content = domConstruct.create('div', {
-                className: 'content'
-            }, this.domNode);
+            }, this.domNode, 'first');
             var settings = domConstruct.create('div', {
                 className: 'settings'
             }, 'header', 'last');
@@ -148,10 +161,6 @@ define([
             nextButton.placeAt(buttons, 'last');
 
             settingsButton.placeAt(settings);
-
-            this.songList = new SongList({
-                collection: this.songListModel
-            }, content);
         },
 
         startup: function () {
@@ -164,7 +173,6 @@ define([
             this._prevButton.startup();
             this._newSongButton.startup();
             this._nextButton.startup();
-            this.songList.startup();
         },
 
         postCreate: function () {
