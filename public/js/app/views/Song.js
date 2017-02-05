@@ -101,8 +101,17 @@ define([
             var score = vf.EasyScore();
             var system = vf.System();
 
-            scale.push(scale[0]);
-            scale = scale.map(function (note, index) {
+            // TODO: figure out why we can't have more than a measure long
+            // basically, because I can't figure out how to have more than a
+            // single measure displayed at a time, we have to set every note
+            // as an eighth note and ensure that our scale is 8 notes long...
+            var endOfScale = [scale[0]];
+            var notesRequired = (8 - scale.length);
+            if (endOfScale.length < notesRequired) {
+                endOfScale = endOfScale.concat(scale.slice(-(notesRequired - 1)).reverse());
+            }
+
+            scale = scale.concat(endOfScale).map(function (note, index) {
                 // TODO: allow user to set octave
                 var mod = index === 0 ? '4/8' : '4';
                 return note + mod;
