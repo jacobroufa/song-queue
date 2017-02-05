@@ -35,6 +35,10 @@ header {
 	top: 34px;
 }
 
+.buttons {
+	padding: 10px 5px;
+}
+
 .buttons > span:first-child {
 	margin-left: 0.5%;
 	text-align: left;
@@ -56,6 +60,7 @@ header {
 }
 
 .song {
+	padding: 10px 0;
 	position: relative;
 }
 
@@ -65,7 +70,7 @@ header {
 
 .song > .songActions {
 	position: absolute;
-	top: 5px;
+	top: 20px;
 	right: 5px;
 }
 
