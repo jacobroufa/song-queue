@@ -18,9 +18,8 @@ define([
             var scales = [];
 
             modelToAdd.keys.forEach(function (key) {
-                modelToAdd.modes.forEach(function (mode) {
-                    scales.push(request('/scale/' + key + '-' + mode, { handleAs: 'json' }));
-                });
+                var encodedKey = encodeURIComponent(key.key);
+                scales.push(request('/scale/' + encodedKey + '-' + key.mode, { handleAs: 'json' }));
             });
 
             return all(scales).then(function (data) {

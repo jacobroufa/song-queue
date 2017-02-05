@@ -196,8 +196,7 @@ define([
             this.newSongForm.content.on('newSong', lang.hitch(this, function (event) {
                 this.songListModel.add({
                     title: event.title,
-                    keys: event.keys,
-                    modes: event.modes
+                    keys: event.keys
                 }).then(lang.hitch(this, function () {
                     this.newSongForm.hide();
                     this.songList.refresh();
