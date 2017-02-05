@@ -37,6 +37,7 @@ define([
             var keysContainer = domConstruct.create('div', null, this.domNode);
 
             var keyModeSelect = this.songKeys = new KeyModeSelectContainer({
+                className: 'keyModeSelectContainer',
                 keys: this.keys,
                 modes: ['major', 'minor']
             });

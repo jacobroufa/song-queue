@@ -97,6 +97,7 @@ define([
                 this.newSongForm = new Dialog({
                     title: 'Add a New Song',
                     content: new SongForm({
+                        className: 'newSongForm',
                         keys: this.keys,
                         scales: this.scales
                     })

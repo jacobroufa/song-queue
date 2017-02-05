@@ -30,7 +30,9 @@ define([
 
             this._addNewSelect();
 
-            var newSelectContainer = domConstruct.create('div', null, this.domNode);
+            var newSelectContainer = domConstruct.create('div', {
+                className: 'addAnotherScale'
+            }, this.domNode);
 
             this.addNewSelect = domConstruct.create('a', {
                 innerHTML: 'Add another scale'
@@ -67,6 +69,7 @@ define([
         _addNewSelect: function () {
             var index = this.keyModeSelects.length;
             var select = new KeyModeSelect({
+                className: 'keyModeSelect',
                 index: index,
                 keys: this.keys,
                 modes: this.modes
