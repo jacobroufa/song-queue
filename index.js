@@ -24,12 +24,12 @@ app.get('/scale/:key-:mode', (req, res) => {
     if (mode.split(' ').length === 1
         && mode === 'major' || mode === 'minor') {
         const pentatonic = mode + ' pentatonic';
-        result[pentatonic] = scale.get(pentatonic, key);
+        result[key + ' ' + pentatonic] = scale.get(pentatonic, key);
     }
 
     log('/scale/' + scaleName);
 
-    result[mode] = scale.get(mode, key);
+    result[key + ' ' + mode] = scale.get(mode, key);
 
     res.json(result);
 });
