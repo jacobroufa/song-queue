@@ -86,6 +86,9 @@ define([
             if (value === '') {
                 this.keySelect.set('value', this.initialKey);
                 this.modeSelect.set('value', this.initialMode);
+            } else if (lang.isArray(value)) {
+                this.keySelect.set('value', value[0]);
+                this.modeSelect.set('value', value[1]);
             }
         },
 

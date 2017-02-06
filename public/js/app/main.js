@@ -81,7 +81,10 @@ define([
 
                 // TODO: move this out of buildRendering somehow, and finish wiring it up
                 this.songList.on('song-edit', lang.hitch(this, function (event) {
-                    console.log(event);
+                    this.songListModel.get(event.id).then(lang.hitch(this, function (song) {
+                        this.newSongForm.content.set('value', song);
+                        this.newSongForm.show();
+                    }));
                 }));
             }));
 
@@ -194,8 +197,13 @@ define([
                 }));
             }));
 
-            this.newSongForm.content.on('newSong', lang.hitch(this, function (event) {
-                this.songListModel.add({
+            this.newSongForm.on('hide', lang.hitch(this, function () {
+                this.newSongForm.content.set('value', '');
+            }));
+
+            this.newSongForm.content.on('songForm', lang.hitch(this, function (event) {
+                this.songListModel.put({
+                    id: event.id || null,
                     title: event.title,
                     keys: event.keys
                 }).then(lang.hitch(this, function () {

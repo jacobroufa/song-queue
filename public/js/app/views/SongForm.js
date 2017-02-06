@@ -20,6 +20,8 @@ define([
     return declare('app/views/SongForm', [ContentPane, Evented], {
         keys: null,
         scales: null,
+        value: null,
+        editId: null,
 
         buildRendering: function () {
             this.inherited(arguments);
@@ -52,13 +54,13 @@ define([
                     var title = this.songName.get('value');
                     var keys = this.songKeys.get('value');
 
-                    this.emit('newSong', {
+                    this.emit('songForm', {
+                        id: this.editId || null,
                         title: title,
                         keys: keys,
                     });
 
-                    this.songName.set('value', '');
-                    this.songKeys.set('value', '');
+                    this.set('value', '');
                 })
             });
             this.createNewSong.placeAt(buttonContainer);
@@ -70,6 +72,18 @@ define([
             this.songName.startup();
             this.songKeys.startup();
             this.createNewSong.startup();
+        },
+
+        _setValueAttr: function (value) {
+            if (value === '') {
+                this.editId = null;
+                this.songName.set('value', '');
+                this.songKeys.set('value', '');
+            } else if (typeof value === 'object') {
+                this.editId = value.id;
+                this.songName.set('value', value.title);
+                this.songKeys.set('value', Object.keys(value.scales));
+            }
         }
     });
 });

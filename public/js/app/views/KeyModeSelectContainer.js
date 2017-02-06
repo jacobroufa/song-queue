@@ -19,12 +19,10 @@ define([
         value: null,
         keyModeSelects: null,
 
-        constructor: function () {
-            this.keyModeSelects = [];
-        },
-
         buildRendering: function () {
             this.inherited(arguments);
+
+            this.keyModeSelects = [];
 
             this.selectContainer = domConstruct.create('div', null, this.domNode);
 
@@ -49,10 +47,15 @@ define([
         },
 
         _setValueAttr: function (value) {
+            this.keyModeSelects = [];
+            domConstruct.empty(this.selectContainer);
+
             if (value === '') {
-                this.keyModeSelects = [];
-                domConstruct.empty(this.selectContainer);
                 this._addNewSelect();
+            } else if (lang.isArray(value)) {
+                value.forEach(lang.hitch(this, function (key) {
+                    this._addNewSelect(key.split('-').splice(0, 2));
+                }));
             }
         },
 
@@ -66,7 +69,7 @@ define([
             }
         },
 
-        _addNewSelect: function () {
+        _addNewSelect: function (val) {
             var index = this.keyModeSelects.length;
             var select = new KeyModeSelect({
                 className: 'keyModeSelect',
@@ -74,6 +77,10 @@ define([
                 keys: this.keys,
                 modes: this.modes
             });
+
+            if (val) {
+                select.set('value', val);
+            }
 
             select.placeAt(this.selectContainer);
             this.keyModeSelects.push(select);
