@@ -22,6 +22,7 @@ define([
         scales: null,
         value: null,
         editId: null,
+        mode: null,
 
         buildRendering: function () {
             this.inherited(arguments);
@@ -47,7 +48,7 @@ define([
 
             var buttonContainer = domConstruct.create('div', null, this.domNode);
             this.createNewSong = new Button({
-                label: 'Add Song',
+                label: this.mode + ' Song',
                 onClick: lang.hitch(this, function (event) {
                     event.preventDefault();
 
@@ -84,6 +85,13 @@ define([
                 this.songName.set('value', value.title);
                 this.songKeys.set('value', Object.keys(value.scales));
             }
+
+            this.value = value;
+        },
+
+        _setModeAttr: function (mode) {
+            this.createNewSong.set('label', mode + ' Song');
+            this.mode = mode;
         }
     });
 });

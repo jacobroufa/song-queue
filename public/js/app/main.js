@@ -82,7 +82,9 @@ define([
                 // TODO: move this out of buildRendering somehow, and finish wiring it up
                 this.songList.on('song-edit', lang.hitch(this, function (event) {
                     this.songListModel.get(event.id).then(lang.hitch(this, function (song) {
+                        this.newSongForm.set('title', 'Edit ' + song.title);
                         this.newSongForm.content.set('value', song);
+                        this.newSongForm.content.set('mode', 'Edit');
                         this.newSongForm.show();
                     }));
                 }));
@@ -102,7 +104,8 @@ define([
                     content: new SongForm({
                         className: 'newSongForm',
                         keys: this.keys,
-                        scales: this.scales
+                        scales: this.scales,
+                        mode: 'Add'
                     })
                 });
                 this.newSongForm.startup();
@@ -148,6 +151,8 @@ define([
             var newSongButton = this._newSongButton = new Button({
                 label: 'Add Another Song',
                 onClick: lang.hitch(this, function () {
+                    this.newSongForm.set('title', 'Add a New Song');
+                    this.newSongForm.content.set('mode', 'Add');
                     this.newSongForm.show();
                 })
             });
@@ -202,11 +207,17 @@ define([
             }));
 
             this.newSongForm.content.on('songForm', lang.hitch(this, function (event) {
-                this.songListModel.put({
-                    id: event.id || null,
+                var method = event.id ? 'put' : 'add';
+                var song = {
                     title: event.title,
                     keys: event.keys
-                }).then(lang.hitch(this, function () {
+                };
+
+                if (event.id) {
+                    song.id = event.id;
+                }
+
+                this.songListModel[method](song).then(lang.hitch(this, function () {
                     this.newSongForm.hide();
                     this.songList.refresh();
                 }));
