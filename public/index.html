@@ -35,34 +35,50 @@
 		<script type="text/javascript" src="/js/lib/dojo/dojo.js"></script>
 
 		<script type="text/javascript">
-			require(['dojo/request', 'dojo/promise/all', 'app'], function (request, all, App) {
+			require([
+				'dojo/request',
+				'dojo/promise/all',
+				'app',
+				'app/models/Settings'
+			], function (
+				request,
+				all,
+				App,
+				SettingsModel
+			) {
 				var scales = request.get('/scales', { handleAs: 'json' });
 				var keys = request.get('/keys', { handleAs: 'json' });
+				var dbConfig = {
+					version: 3,
+					stores: {
+						songs: {
+							title: 50,
+							id: {
+								autoIncrement: true,
+								preference: 100
+							},
+							scales: {
+								multiEntry: true,
+								preference: 10
+							}
+						},
+						settings: {
+							id: 50,
+							value: 10
+						}
+					}
+				};
+				var modes = new SettingsModel({
+					dbConfig: dbConfig,
+					storeName: 'settings'
+				}).get('Display Mode');
 
-				all([scales, keys]).then(function (data) {
+				all([scales, keys, modes]).then(function (data) {
 					var app = new App({
 						scales: data[0].scales,
 						keys: data[1].keys,
-						dbConfig: {
-							version: 3,
-							stores: {
-								songs: {
-									title: 50,
-									id: {
-										autoIncrement: true,
-										preference: 100
-									},
-									scales: {
-										multiEntry: true,
-										preference: 10
-									}
-								},
-								settings: {
-									id: 50,
-									value: 10
-								}
-							}
-						}
+						dbConfig: dbConfig,
+						mode: data[2]
 					});
 					app.placeAt('main');
 					app.startup();

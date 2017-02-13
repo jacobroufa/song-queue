@@ -40,6 +40,8 @@ define([
 
         dbConfig: null,
 
+        mode: null,
+
         constructor: function () {
             // TODO: make current song tracking and "pagination" work
             this.songs = [];
@@ -69,26 +71,13 @@ define([
         buildRendering: function () {
             this.inherited(arguments);
 
-            this.settingsModel.get('Display Mode').then(lang.hitch(this, function (mode) {
-                var content = domConstruct.create('div', {
-                    className: 'content'
-                }, this.domNode, 'last');
-                this.songList = new SongList({
-                    collection: this.songListModel,
-                    displayMode: mode.value
-                }, content);
-                this.songList.startup();
-
-                // TODO: move this out of buildRendering somehow, and finish wiring it up
-                this.songList.on('song-edit', lang.hitch(this, function (event) {
-                    this.songListModel.get(event.id).then(lang.hitch(this, function (song) {
-                        this.newSongForm.set('title', 'Edit ' + song.title);
-                        this.newSongForm.content.set('value', song);
-                        this.newSongForm.content.set('mode', 'Edit');
-                        this.newSongForm.show();
-                    }));
-                }));
-            }));
+            var content = domConstruct.create('div', {
+                className: 'content'
+            }, this.domNode, 'last');
+            this.songList = new SongList({
+                collection: this.songListModel,
+                displayMode: this.mode.value
+            }, content);
 
             if (!this.scaleDisplayForm) {
                 this.scaleDisplayForm = new Dialog({
@@ -182,6 +171,8 @@ define([
             this._prevButton.startup();
             this._newSongButton.startup();
             this._nextButton.startup();
+
+            this.songList.startup();
         },
 
         postCreate: function () {
@@ -220,6 +211,15 @@ define([
                 this.songListModel[method](song).then(lang.hitch(this, function () {
                     this.newSongForm.hide();
                     this.songList.refresh();
+                }));
+            }));
+
+            this.songList.on('song-edit', lang.hitch(this, function (event) {
+                this.songListModel.get(event.id).then(lang.hitch(this, function (song) {
+                    this.newSongForm.set('title', 'Edit ' + song.title);
+                    this.newSongForm.content.set('value', song);
+                    this.newSongForm.content.set('mode', 'Edit');
+                    this.newSongForm.show();
                 }));
             }));
         },
