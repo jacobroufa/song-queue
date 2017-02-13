@@ -26,11 +26,12 @@ app.get('/scale/:key-:mode', (req, res) => {
     const scaleName = key + '-' + mode;
     const pentatonic = req.query.pentatonic;
     const keyScale = scale.get(mode, key);
+    const keyMode = key + ' ' + mode;
     const keyModes = Object.keys(modes);
     const major = mode === 'major' ? keyScale : scale.get('major', keyScale[8 - modes[mode]]);
     const result = {};
 
-    result[key] = {
+    result[keyMode] = {
         scale: keyScale,
         related: []
     };
@@ -40,7 +41,7 @@ app.get('/scale/:key-:mode', (req, res) => {
     log('/scale/' + scaleName);
 
     if (pentatonic) {
-        result[key].related.push({
+        result[keyMode].related.push({
             'pentatonic': scale.get(mode + ' pentatonic', key)
         });
     }
@@ -51,7 +52,7 @@ app.get('/scale/:key-:mode', (req, res) => {
 
         scaleObj[keyModeKey + ' ' + name] = scale.get(name, keyModeKey);
 
-        result[key].related.push(scaleObj);
+        result[keyMode].related.push(scaleObj);
     });
 
     res.json(result);
