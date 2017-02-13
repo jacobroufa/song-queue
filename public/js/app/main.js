@@ -198,7 +198,6 @@ define([
             }));
 
             this.newSongForm.content.on('songForm', lang.hitch(this, function (event) {
-                var method = event.id ? 'put' : 'add';
                 var song = {
                     title: event.title,
                     keys: event.keys
@@ -208,7 +207,7 @@ define([
                     song.id = event.id;
                 }
 
-                this.songListModel[method](song).then(lang.hitch(this, function () {
+                this.songListModel.put(song).then(lang.hitch(this, function () {
                     this.newSongForm.hide();
                     this.songList.refresh();
                 }));

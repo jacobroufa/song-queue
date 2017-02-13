@@ -12,16 +12,6 @@ define([
     Trackable
 ) {
     return declare('app/models/SongList', [LocalDB, Trackable], {
-        add: function (model) {
-            var self = this;
-            var oldargs = arguments;
-
-            return this._update(model).then(function (updatedModel) {
-                oldargs[0] = updatedModel;
-
-                return self.inherited(oldargs);
-            });
-        },
         put: function (model) {
             var self = this;
             var oldargs = arguments;
