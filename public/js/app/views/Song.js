@@ -49,7 +49,7 @@ define([
 
                 domConstruct.create('br', null, scaleContainer);
 
-                domConstruct.place(this['_render' + this.displayMode](scale), scaleContainer);
+                domConstruct.place(this['_render' + this.displayMode](scale.scale), scaleContainer);
             }));
 
             var songActions = domConstruct.create('div', {

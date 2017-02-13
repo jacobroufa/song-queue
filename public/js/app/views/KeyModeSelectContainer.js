@@ -54,7 +54,7 @@ define([
                 this._addNewSelect();
             } else if (lang.isArray(value)) {
                 value.forEach(lang.hitch(this, function (key) {
-                    this._addNewSelect(key.split('-').splice(0, 2));
+                    this._addNewSelect(key.split(' ').splice(0, 2));
                 }));
             }
         },

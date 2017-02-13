@@ -12,12 +12,30 @@ define([
     Trackable
 ) {
     return declare('app/models/SongList', [LocalDB, Trackable], {
-        add: function (modelToAdd) {
+        add: function (model) {
             var self = this;
             var oldargs = arguments;
+
+            return this._update(model).then(function (updatedModel) {
+                oldargs[0] = updatedModel;
+
+                return self.inherited(oldargs);
+            });
+        },
+        put: function (model) {
+            var self = this;
+            var oldargs = arguments;
+
+            return this._update(model).then(function (updatedModel) {
+                oldargs[0] = updatedModel;
+
+                return self.inherited(oldargs);
+            });
+        },
+        _update: function (model) {
             var scales = [];
 
-            modelToAdd.keys.forEach(function (key) {
+            model.keys.forEach(function (key) {
                 var encodedKey = encodeURIComponent(key.key);
                 scales.push(request('/scale/' + encodedKey + '-' + key.mode, { handleAs: 'json' }));
             });
@@ -32,13 +50,16 @@ define([
 
                     return obj;
                 }, {});
-
-                oldargs[0] = {
-                    title: modelToAdd.title,
+                var updatedModel = {
+                    title: model.title,
                     scales: scalesObj
                 };
 
-                return self.inherited(oldargs);
+                if (model.id) {
+                    updatedModel.id = model.id;
+                }
+
+                return updatedModel;
             });
         }
     });
