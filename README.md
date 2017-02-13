@@ -11,7 +11,7 @@ This is intended to be run as a service somewhere for my personal use at band pr
 
 `/keys` returns an array of all the possible keys, including sharp and flat keys.
 
-`/scale/:key-:mode` returns an array named for the mode, with the notes of the requested scale, e.g. `/scale/ab-minor-pentatonic`, if available. If `:mode` is major or minor, the corresponding pentatonic scale is also returned.
+`/scale/:key-:mode` returns an object with a single property named for the key, with two properties: `scale` and `related`. `scale` contains the notes of the requested scale, e.g. `/scale/ab-minor`, if available. `related` is an array of related scales in other modes. If a `pentatonic` query string with any truthy value is appended to the URL, the corresponding pentatonic scale is also returned in the `related` array.
 
 `/scales` returns an array of the available scales.
 
@@ -20,7 +20,7 @@ This is intended to be run as a service somewhere for my personal use at band pr
 ### Available scales
 
 + major
++ lydian
++ mixolydian
 + minor
-+ dorian
-+ major pentatonic
-+ minor pentatonic
++ pentatonic
