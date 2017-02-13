@@ -74,10 +74,18 @@ header {
     border-top: 1px solid #ccc;
     margin-top: 5px;
     padding-top: 5px;
+	position: relative;
 }
 
 .keyModeSelect:first-child {
 	border-top: 0;
+}
+
+.keyModeSelect .removeScale {
+	font-size: 80%;
+	position: absolute;
+	right: 15px;
+	top: 5px;
 }
 
 .addAnotherScale {

@@ -3,6 +3,7 @@ define([
     'dojo/_base/lang',
     'dojo/dom-construct',
     'dojo/on',
+    'dojo/topic',
     'dijit/_WidgetBase',
     'app/views/KeyModeSelect'
 ], function (
@@ -10,6 +11,7 @@ define([
     lang,
     domConstruct,
     on,
+    topic,
     _WidgetBase,
     KeyModeSelect
 ) {
@@ -44,6 +46,12 @@ define([
                 event.preventDefault();
                 this._addNewSelect();
             }));
+
+            topic.subscribe('removeScale', lang.hitch(this, function (data) {
+                var select = data.index
+                this.keyModeSelects[select].destroy();
+                this.keyModeSelects.splice(select, 1);
+            }));
         },
 
         _setValueAttr: function (value) {
@@ -72,7 +80,7 @@ define([
         _addNewSelect: function (val) {
             var index = this.keyModeSelects.length;
             var select = new KeyModeSelect({
-                className: 'keyModeSelect',
+                className: 'keyModeSelect select_' + index,
                 index: index,
                 keys: this.keys,
                 modes: this.modes

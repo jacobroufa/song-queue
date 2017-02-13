@@ -2,12 +2,16 @@ define([
     'dojo/_base/declare',
     'dojo/_base/lang',
     'dojo/dom-construct',
+    'dojo/on',
+    'dojo/topic',
     'dijit/_WidgetBase',
     'dijit/form/Select'
 ], function (
     declare,
     lang,
     domConstruct,
+    on,
+    topic,
     _WidgetBase,
     Select
 ) {
@@ -18,6 +22,7 @@ define([
         modes: null,
         initialMode: null,
         value: null,
+        selectIndex: null,
 
         buildRendering: function () {
             this.inherited(arguments);
@@ -73,6 +78,17 @@ define([
                 options: modeOptions
             });
             this.modeSelect.placeAt(div);
+
+            if (this.index > 0) {
+                var removeLink = domConstruct.create('a', {
+                    className: 'removeScale',
+                    innerHTML: 'Remove scale'
+                }, div);
+                on(removeLink, 'click', lang.hitch(this, function (event) {
+                    event.preventDefault();
+                    topic.publish('removeScale', { index: this.index });
+                }));
+            }
         },
 
         startup: function () {
